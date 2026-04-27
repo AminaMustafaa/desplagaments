@@ -1,0 +1,26 @@
+services:
+  web:
+    image: php:8.2-apache
+    ports:
+      - "8080:80"
+    environment:
+      DB_HOST: db
+      DB_NAME: tasques
+      DB_USER: user
+      DB_PASS: password
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: tasques
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  db_data:
