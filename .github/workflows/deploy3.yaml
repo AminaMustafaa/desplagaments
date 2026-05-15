@@ -1,11 +1,9 @@
 name: Deploy with GHCR
-
 on:
   push:
     branches: [ main ]
-
 jobs:
-  build: # This can be any name
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -18,13 +16,11 @@ jobs:
         with:
           push: true
           tags: ghcr.io/${{ github.repository }}:latest
-
   deploy:
-    needs: build # Must match the job name above
+    needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy to EC2 via SSH
-        uses: appleboy/ssh-action@v1.0.3
+      - uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ubuntu
@@ -33,5 +29,4 @@ jobs:
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             export IMAGE=ghcr.io/${{ github.repository }}:latest
             export PORT=80
-            # We use 'export' so these variables are available to the docker compose process
-            docker compose -f docker-compose.yml up -d --pull always --no-build
+            docker compose up -d --pull always --no-build

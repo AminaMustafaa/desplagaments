@@ -1,24 +1,15 @@
 name: Deploy to AWS EC2
-
 on:
   workflow_dispatch:
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Deploy to EC2 via SSH
-        uses: appleboy/ssh-action@v1.0.3
+      - uses: actions/checkout@v4
+      - uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
+          username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd /home/ec2-user/app || git clone https://github.com/${{ github.repository }} /home/ec2-user/app
-            cd /home/ec2-user/app
-            git pull
-            docker compose down
-            docker compose up -d --build
+            echo "Old deploy disabled"
